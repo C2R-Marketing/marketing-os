@@ -1,0 +1,13 @@
+{
+  "name": "marketing-os",
+  "owner": { "name": "Yuzzy Itaba" },
+  "description": "Marketing OS: an entire marketing department as one Claude skill",
+  "plugins": [
+    {
+      "name": "marketing-os",
+      "source": "./",
+      "description": "An entire marketing department as one Claude skill. 14 modules: audits scored 0-100, an 18-tactic hook engine, copy graded before you see it, ad diagnosis, GEO, email, launches, pricing.",
+      "license": "MIT"
+    }
+  ]
+}
