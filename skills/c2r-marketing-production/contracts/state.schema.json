@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://c2r.local/schemas/marketing-production-state-v1.json",
+  "title": "C2R Marketing Production State v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "campaign_id",
+    "job_id",
+    "revision",
+    "phase",
+    "status",
+    "checkpoint",
+    "active_employee",
+    "authorization",
+    "required_capabilities",
+    "idempotency",
+    "receipts",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "campaign_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "job_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "revision": {"type": "integer", "minimum": 0},
+    "phase": {"enum": ["INTAKE", "QUALIFY", "PREPARE", "EXECUTE", "VERIFY", "MEASURE", "JUDGE", "LEARN", "COMPLETE", "OWNER_GATE", "BLOCKED"]},
+    "status": {"enum": ["REPORTED", "OBSERVED", "VERIFIED", "PROVEN", "NOT_PROVEN", "DISPUTED", "RETRACTED", "BLOCKED"]},
+    "checkpoint": {"type": "string", "minLength": 1, "maxLength": 256},
+    "active_employee": {"enum": ["marketing-department-director", "zeffy-email-operations-lead", "social-distribution-operator", "youtube-growth-producer", "marketing-performance-adversarial-judge"]},
+    "objective": {"type": "string", "maxLength": 4000},
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority_source", "authorization_id", "scope_status"],
+      "properties": {
+        "authority_source": {"type": "string", "minLength": 1},
+        "authorization_id": {"type": "string", "minLength": 1},
+        "scope_status": {"enum": ["IN_SCOPE", "OUT_OF_SCOPE", "UNKNOWN"]},
+        "expires_at": {"type": ["string", "null"], "format": "date-time"},
+        "constraints_ref": {"type": ["string", "null"]}
+      }
+    },
+    "required_capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifact_id", "uri", "sha256"],
+        "properties": {
+          "artifact_id": {"type": "string", "minLength": 1},
+          "uri": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "media_type": {"type": ["string", "null"]}
+        }
+      },
+      "default": []
+    },
+    "idempotency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "external_action_state"],
+      "properties": {
+        "key": {"type": "string", "minLength": 1, "maxLength": 256},
+        "external_action_state": {"enum": ["NONE", "RESERVED", "ATTEMPTED", "VERIFIED", "ROLLED_BACK", "DISPUTED"]},
+        "external_object_id": {"type": ["string", "null"]}
+      }
+    },
+    "receipts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["receipt_id", "status", "kind", "source", "recorded_at"],
+        "properties": {
+          "receipt_id": {"type": "string", "minLength": 1},
+          "status": {"enum": ["REPORTED", "OBSERVED", "VERIFIED", "PROVEN", "NOT_PROVEN", "DISPUTED", "RETRACTED", "BLOCKED"]},
+          "kind": {"type": "string", "minLength": 1},
+          "source": {"type": "string", "minLength": 1},
+          "recorded_at": {"type": "string", "format": "date-time"},
+          "artifact_ref": {"type": ["string", "null"]},
+          "hash": {"type": ["string", "null"]},
+          "summary": {"type": ["string", "null"], "maxLength": 2000}
+        }
+      }
+    },
+    "judge": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "verdict": {"enum": ["SCALE", "REPAIR", "HOLD", "KILL"]},
+        "independence": {"enum": ["DIFFERENT_PROVIDER_OR_LINEAGE", "FRESH_CONTEXT_SAME_PROVIDER", "NOT_INDEPENDENT"]},
+        "receipt_ref": {"type": "string"}
+      }
+    },
+    "owner_gate": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "reason": {"type": "string", "minLength": 1},
+        "requested_action": {"type": "string", "minLength": 1},
+        "immutable_packet_ref": {"type": ["string", "null"]}
+      }
+    },
+    "next_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instruction", "employee", "capabilities"],
+      "properties": {
+        "instruction": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "employee": {"type": "string", "minLength": 1},
+        "capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}
