@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://c2r.local/schemas/marketing-capabilities-v1.json",
+  "title": "C2R Marketing Harness Capability Map v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "harness", "model", "capabilities"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "harness": {"type": "string", "minLength": 1},
+    "model": {"type": "string", "minLength": 1},
+    "session_id": {"type": ["string", "null"]},
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["available", "adapter"],
+        "properties": {
+          "available": {"type": "boolean"},
+          "adapter": {"type": ["string", "null"]},
+          "scope": {"type": ["string", "null"]},
+          "notes": {"type": ["string", "null"], "maxLength": 1000}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "canonical_capability_names": {
+      "enum": [
+        "state.read",
+        "state.compare-and-swap",
+        "artifact.read",
+        "artifact.write",
+        "repo.read",
+        "repo.write",
+        "web.search",
+        "browser.read",
+        "browser.act",
+        "email.read",
+        "email.write",
+        "social.read",
+        "social.publish",
+        "video.render",
+        "youtube.read",
+        "youtube.publish",
+        "metrics.read",
+        "judge.run"
+      ]
+    }
+  }
+}
